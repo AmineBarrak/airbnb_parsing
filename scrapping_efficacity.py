@@ -1,13 +1,10 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import timedelta, date
-import datetime
-import calendar
-import sys
 from itertools import repeat
 from random import randint
 from statistics import mean
-
+import datetime, calendar, sys
 
 def Daterange(start_date, end_date):
    for n in range(int ((end_date - start_date).days)):
@@ -18,24 +15,22 @@ def Average(lst):
 
 def Scrapping(start_date, end_date, traveler, room_reference):
    ##------------------------ changes in this part only --------------------------------- ##
-   driverLocation = "/usr/bin/chromedriver"
-   driver = webdriver.Chrome(driverLocation)
    link = 'https://fr.airbnb.ca/rooms/{3}?check_in={0}&adults={2}&check_out={1}'.format(start_date, end_date, traveler, room_reference)
-   print(link)
+   #~ print(link)
    driver.get(link)
    res = driver.execute_script("return document.documentElement.outerHTML")
-   driver.quit()
-
    soup = BeautifulSoup(res, 'lxml')
-
    price = soup.find('span', {'class': '_doc79r'}).text.replace('\n', '')
+
    return price
 
 
 if __name__ == "__main__":
-
-    traveler = sys.argv[1]
-    room_reference = sys.argv[2]
+	
+    driverLocation = "/usr/bin/chromedriver"
+    driver = webdriver.Chrome(driverLocation)
+    traveler = sys.argv[1] #2
+    room_reference = sys.argv[2] #16389574
     
     datetime.datetime.now().strftime("%Y-%m-%d")
     year = int(datetime.datetime.now().strftime("%Y"))
@@ -63,7 +58,7 @@ if __name__ == "__main__":
 
     [result.append(Average(x)) for x in list_months]
 
-
+    driver.quit()
     with open('output.txt', 'a') as f:
        f.write("%s,%s,%s\n" % (room_reference, traveler, result))
 
